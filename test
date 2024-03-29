@@ -37,7 +37,7 @@ contract Lottery is CommitReveal{
      function start(uint choice) public  payable {
         require(contractOwner == msg.sender);
         require(msg.value == 3 ether , " 3 ether");
-        coin += 3 ether ;
+        coin = 0 ether ;
         player[5].ischoice = choice;
         startstade = block.timestamp ;
         bytes32 hashChoice = getHash(bytes32(player[5].ischoice));
@@ -56,21 +56,32 @@ contract Lottery is CommitReveal{
         require(player[choice].ischoice == 9,"wrong");
         player[choice].ischoice == 1 ;
         player[choice].addr == msg.sender ;
+        coin += 1 ; 
     
 
     }
 
-     function stade1 (uint choice) public payable {
+     function stade1 (uint _choice) public payable {
         require(block.timestamp <= startstade+T2);
         require(contractOwner == msg.sender) ;
         reveal(bytes32(_choice));
         address payable chamAddr = payable(player[_choice].addr);
-
-        
-
-        
-
+        chamAddr.transfer(3 ether);
      }
+
+
+     function stade4() public payable {
+      require(block.timestamp > startstade+T2);
+      
+      uint idx = addrtoplayer[msg.sender];
+      require(player[idx].ischoice != 6 );
+      
+      player[idx].ischoice = 6 ; //เปลี่ยนไม่ให้ใช้งานได้อีกครั้ง
+      address payable addr = payable(player[idx].addr);
+      addr.transfer(1 ether);
+    }  
+
+        
     
 
 
